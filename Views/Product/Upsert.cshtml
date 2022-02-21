@@ -14,50 +14,64 @@ title = "Edit Product";
     <h2 class="tect-primary">@title</h2>
 <hr />
 </div>
-@*<div asp-validation-summary="All"></div*@>
-        <div class="mb-3">
+  @*  <div asp-validation-summary="All"></div>*@
+     <div class="mb-3">
         <label asp-for="Name"></label>
         <input asp-for="Name" class="form-cotrol" />
         <span asp-validation-for="Name" class="text-danger"></span>
-</div>
-<div class="mb-3">
-<label asp-for="Price"></label>
-<input asp-for="Price" class="form-cotrol" />
-<span asp-validation-for="Price" class="text-danger"></span>
+     </div>
+     <div class="mb-3">
+    <label asp-for="Price"></label>
+     <input asp-for="Price" class="form-cotrol" />
+    <span asp-validation-for="Price" class="text-danger"></span>
 
-</div>
-<div class="mb-3">
-<label asp-for="Description"></label>
-<input asp-for="Description" class="form-cotrol" />
-<span asp-validation-for="Description" class="text-danger"></span>
+      </div>
+     <div class="mb-3">
+      <label asp-for="Description"></label>
+       <input asp-for="Description" class="form-cotrol" />
+        <span asp-validation-for="Description" class="text-danger"></span>
 
-</div>
-<div class="mb-3">
-Image
-<input type="file" name="files" id="uploadBox"  class="form-cotrol" />
-<span asp-validation-for="Price" class="text-danger"></span>
+     </div>
+     <div class="mb-3">
+       Image
+      <input type="file" name="files" id="uploadBox"  class="form-cotrol" />
+      <span asp-validation-for="Image" class="text-danger"></span>
 
-@* </div>
-<div class="mb-3">
-<label asp-for="Price"></label>
-<input asp-for="Price" class="form-cotrol" />
-<span asp-validation-for="Price" class="text-danger"></span>
+      </div>
+                 <div class="form-btn-group row">
+                    <div class="mb-3">
 
-</div>*@
-<div class="form-group-row">
-<div class="col-8 offset-4 row">
-<div class="col">
+                    <label asp-for="CategoryId"></label>
+                    <div class="col-8">
+                    <Select input asp-for="CategoryId" asp-items="@ViewBag.CategoryDropDown" class="form-cotrol">
+                        <option selected> Select Category</option>
+                    </Select>
+                    
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                </div>
+                </div>
+     <div class="form-group-row">
+    <div class="col-8 offset-4 row">
+     <div class="col">
         @if(Model.Id != 0)
              {
                     <input type="submit" class="btn btn-info w-100" value="Update"/>
              }
         else
 {
-        <input type="submit" onclick="return validateInput()" class="btn btn-primary w-100" asp-area="Middle" value="Create"/>
+        <input type="submit" onclick="return validateInput()" class="btn btn-primary w-100" value="Create"/>
+
+           
 }
     </div>
 
     </div>
+    </div>
+   
+    <div class="col offset-2 row ">
+         <br />
+        <a asp-controller="category" asp-action="Index"  class="btn btn-secondary" style="width:150px">Back</a>
     </div>
 
     </div>

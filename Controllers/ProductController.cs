@@ -42,7 +42,9 @@ namespace Info.Controllers
                 Value = i.Id.ToString()
 
             });
-            // For viewing dropdown
+            // viewbag- viewbag is used  transfer data to controller to view and it takes any number of propertie and value.it transfer vice versa.
+            //Viewdata - it is also like a viewbag but syntax is diffrent and if we use viewdata first we typecast value but not transfer vice versa.
+            // ViewModel contain field that are represented in the view , it have specific validation rules, it helps to strongly  typed views.
             ViewBag.CategoryDropdown = CategoryDropdown;   
             Product product = new Product();
             if (id == null)
