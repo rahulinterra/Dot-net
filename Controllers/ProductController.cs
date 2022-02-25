@@ -1,4 +1,5 @@
 ﻿using Info.Models;
+using Info.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WebApplication1.Data;
@@ -11,6 +12,8 @@ namespace Info.Controllers
     public class ProductController : Controller
     {
         private readonly ApplicationDBContext _db;
+
+        public IQueryable<SelectListItem> CategorySelectList { get; private set; }
 
         public ProductController(ApplicationDBContext db)
         {
@@ -36,29 +39,40 @@ namespace Info.Controllers
         //Get Upsert
         public IActionResult Upsert(int? id)
         {
-            IEnumerable<SelectListItem> CategoryDropdown = _db.Categories.Select(i => new SelectListItem
-            {
-                Text = i.Name,
-                Value = i.Id.ToString()
+            /*  IEnumerable<SelectListItem> CategoryDropdown = _db.Categories.Select(i => new SelectListItem
+              {
+                  Text = i.Name,
+                  Value = i.Id.ToString()
 
-            });
+              });*/
             // viewbag- viewbag is used  transfer data to controller to view and it takes any number of propertie and value.it transfer vice versa.
             //Viewdata - it is also like a viewbag but syntax is diffrent and if we use viewdata first we typecast value but not transfer vice versa.
             // ViewModel contain field that are represented in the view , it have specific validation rules, it helps to strongly  typed views.
-            ViewBag.CategoryDropdown = CategoryDropdown;   
-            Product product = new Product();
+            /* ViewBag.CategoryDropdown = CategoryDropdown;   
+             Product product = new Product();*/
+            ProductVM productVM = new ProductVM()
+            {
+                /*Product = new Product(),
+                CategorySelectList = _db.Categories.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
+
+                })
+*/
+            };
             if (id == null)
             {
-                return View(product);
+                return View(productVM);
             }
             else
             {
-                product = _db.Product.Find(id);
-                if (product == null)
+                productVM.Product = _db.Product.Find(id);
+                if (productVM.Product == null)
                 {
                     return NotFound();
                 }
-                return View(product);
+                return View(productVM);
             }
         }
         //Post Upsert
