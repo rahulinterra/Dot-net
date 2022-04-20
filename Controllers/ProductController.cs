@@ -1,5 +1,6 @@
 ﻿using Info.Models;
-using Info.ViewModel;
+
+using Info.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WebApplication1.Data;
@@ -7,17 +8,17 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Info.Controllers
 {
-    
-   
+
+
     public class ProductController : Controller
     {
         private readonly ApplicationDBContext _db;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public IQueryable<SelectListItem> CategorySelectList { get; private set; }
-
-        public ProductController(ApplicationDBContext db)
+        public ProductController(ApplicationDBContext db,IWebHostEnvironment webHostEnvironment)
         {
             _db = db;
+           _webHostEnvironment = webHostEnvironment;
 
         }
 
@@ -39,63 +40,85 @@ namespace Info.Controllers
         //Get Upsert
         public IActionResult Upsert(int? id)
         {
-            /*  IEnumerable<SelectListItem> CategoryDropdown = _db.Categories.Select(i => new SelectListItem
-              {
-                  Text = i.Name,
-                  Value = i.Id.ToString()
-
-              });*/
-            // viewbag- viewbag is used  transfer data to controller to view and it takes any number of propertie and value.it transfer vice versa.
-            //Viewdata - it is also like a viewbag but syntax is diffrent and if we use viewdata first we typecast value but not transfer vice versa.
-            // ViewModel contain field that are represented in the view , it have specific validation rules, it helps to strongly  typed views.
-            /* ViewBag.CategoryDropdown = CategoryDropdown;   
-             Product product = new Product();*/
-            ProductVM productVM = new ProductVM()
+            IEnumerable<SelectListItem> CategoryDropdown = _db.Categories.Select(i => new SelectListItem
             {
-                /*Product = new Product(),
-                CategorySelectList = _db.Categories.Select(i => new SelectListItem
-                {
-                    Text = i.Name,
-                    Value = i.Id.ToString()
+                Text = i.Name,
+                Value = i.Id.ToString()
 
-                })
-*/
-            };
+            });
+            //For viewing dropdown
+           ViewData["CategoryDropdown"] = CategoryDropdown;
+            ViewBag.CategoryDropdown = CategoryDropdown;
+            Product product = new Product();
+            //ProductVM productVM = new ProductVM();
+            //{
+            //    Product product = new Product(),
+            //    CategorySelectList = _db.Categories.Select(i => new SelectListItem()
+            //    {
+
+            //        Value = i.Id.ToString()
+            //        Text = i.Name
+            //    });
+            //};
             if (id == null)
             {
-                return View(productVM);
+                return View(product);
             }
             else
             {
-                productVM.Product = _db.Product.Find(id);
-                if (productVM.Product == null)
+                product = _db.Product.Find(id);
+                //product = _db.Product.Find(Id);
+                if (product == null)
                 {
                     return NotFound();
                 }
-                return View(productVM);
+                return View(product);
             }
+
         }
+
+
+
         //Post Upsert
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(Category obj)
+        public IActionResult Upsert(ProductVM productVM)
         {
             if (ModelState.IsValid)
             {
-                _db.Categories.Add(obj);
+                var files = HttpContext.Request.Form.Files;
+                String webRootpath = _webHostEnvironment.WebRootPath;
+                if(productVM.Product.Id==0)
+                {
+                    string upload = webRootpath + WC.Imagepath;
+                    string filename= Guid.NewGuid().ToString();
+                    string extension = Path.GetExtension(files[0].FileName);
+                    using(var filestream= new FileStream(Path.Combine(upload,filename+extension),FileMode.Create))
+                    {
+                        files[0].CopyTo(filestream);
+                    }
+                    productVM.Product.Image = filename + extension;
+                    _db.Product.Add(productVM.Product);
+                }
+              
+                else
+                {
+
+                }
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(obj);
+            return View();
+           
         }
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(int? Id)
         {
-            if (id == null || id == 0)
+            if (Id == null || Id == 0)
             {
                 return NotFound();
             }
-            var categoryFromDb = _db.Categories.Find(id);
+            var categoryFromDb = _db.Categories.Find(Id);
 
             if (categoryFromDb == null)
             {

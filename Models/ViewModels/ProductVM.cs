@@ -1,7 +1,10 @@
-﻿using Info.Models;
-using System.Web.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.WebPages.Html;
 
-namespace Info.ViewModel
+namespace Info.Models.ViewModels
 {
     public class ProductVM
     {

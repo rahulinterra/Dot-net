@@ -20,5 +20,6 @@ namespace Info.Models
         [ForeignKey("CategoryId")]
 
         public virtual Category Category { get; set; }
+        public object Product { get; internal set; }
     }
 }
